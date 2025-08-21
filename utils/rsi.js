@@ -1,6 +1,18 @@
 function calculateRSI(closingPrices, dates, period = 10) {
-  if (closingPrices.length < period + 1 || dates.length !== closingPrices.length) {
-    return [];
+  //
+  if (closingPrices.length < period + 1) {
+    return {
+      error: "Insufficient data for RSI analysis",
+      required: period + 1,
+      received: closingPrices.length,
+    };
+  }
+  if (dates.length !== closingPrices.length) {
+    return {
+      error: "Mismatch between dates and closing prices.",
+      dateLength: dates.length,
+      priceLength: closingPrices.length,
+    };
   }
 
   const rsiList = [];
@@ -35,7 +47,7 @@ function calculateRSI(closingPrices, dates, period = 10) {
     rsiList.push({
       time: dates[i].split("T")[0],
       value: rsiValue,
-      status, 
+      status,
     });
   }
 

@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { fetchAlphaRSI } = require("./api/model/stockModel");
 
-const symbol = "HOOD"; // 或 HOOD
+const symbol = "HOOD"; // or HOOD
 
 fetchAlphaRSI(symbol)
   .then((data) => {

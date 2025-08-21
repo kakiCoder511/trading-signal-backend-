@@ -17,14 +17,7 @@ const fetchRSI = async (symbol) => {
     return day.date?.toISOString?.();
   });
 
-  console.log("📈 closePrices.length =", closePrices.length);
-  console.log("🗓️ dates.length =", dates.length);
-  console.log("🗓️ dates =", dates.slice(0, 3)); // print first 3 only
-
   const rsiList = calculateRSI(closePrices, dates, 10);
-
-  console.log("📊 RSI output =", rsiList.slice(0, 3)); // check what comes out
-
   return rsiList;
 };
 
@@ -102,11 +95,15 @@ const analyseStockFactors = async (symbol) => {
     const dates = historical.map((day) => day.date.toISOString());
     const volumeData = historical.map((day) => day.volume);
 
+    //Stock's name
+    const quote = await yahooFinance.quote(symbol);
+    const name = quote?.longName || quote?.shortName || symbol;
+
     // ✅  RSI
     const rsiData = calculateRSI(closePrices, dates, 10);
 
     if (!rsiData.length) {
-      throw new Error("RSI calculation failed — possibly not enough data.");
+      throw new Error("RSI calculation failed, possibly not enough data.");
     }
 
     const latestRSIEntry = rsiData.at(-1);
@@ -123,17 +120,18 @@ const analyseStockFactors = async (symbol) => {
 
     // ✅ Bullish candles
     const bullishCandles = historical
-      .slice(-5)
+      .slice(-10)
       .filter((day) => day.close > day.open).length;
+    if (bullishCandles >= 6) score += 1;
 
     // ✅ New high
     const newHigh =
       closePrices.at(-1) > Math.max(...closePrices.slice(-10, -1));
 
-    // ✅ Near 20-day moving average
+    // ✅ Near 20-day MA
     const ma20 = average(closePrices.slice(-20));
     const todayClose = closePrices.at(-1);
-    const nearMA20 = Math.abs(todayClose - ma20) / ma20 <= 0.01;
+    const nearMA20 = Math.abs(todayClose - ma20) / ma20 <= 0.03;
 
     // ✅ Score + hints
     const score = calculateScore({
@@ -152,6 +150,7 @@ const analyseStockFactors = async (symbol) => {
 
     return {
       symbol,
+      name,
       rsi: rsi.toFixed(1),
       volumeSpike,
       bullishCandles,
@@ -159,6 +158,7 @@ const analyseStockFactors = async (symbol) => {
       nearMA20,
       score,
       hints,
+      note: "⚠️ This is a demo indicators are for reference only.",
     };
   } catch (err) {
     console.error(`❌ Error analysing ${symbol}:`, err.message || err);
@@ -169,7 +169,6 @@ const analyseStockFactors = async (symbol) => {
     });
   }
 };
-
 
 // ✅ Analyse Multiple Stocks (for recommendation use ）
 const analyseMultipleStocks = async (symbols) => {

@@ -1,7 +1,7 @@
-require("dotenv").config(); // 確保可以讀到 .env 入面嘅 API key
+require("dotenv").config(); 
 const { fetchStockQuote } = require("./api/model/stockModel");
 
-// 測試邊隻股票
+//stock symbol
 const testSymbol = "HOOD";
 
 console.log(`🔍 Testing API for stock: ${testSymbol}\n`);

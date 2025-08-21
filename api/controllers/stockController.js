@@ -40,7 +40,7 @@ exports.getRSI = async (req, res, next) => {
 
   try {
     const rsiList = await fetchRSI(symbol);
-    res.status(200).send({  rsi: rsiList.slice(-30),  latestOnly: true
+    res.status(200).send({  rsi: rsiList.slice(-60),  latestOnly: true
  });
   } catch (err) {
     next(err);
@@ -72,9 +72,16 @@ exports.getBuyingFactors= async (req, res, next) => {
 
 exports.getTop5Recommendations = async (req, res, next) => {
   const symbols = [
-    "AAPL", "MSFT", "NVDA", "TSLA", "AMZN", "META", "GOOGL", "COIN", "HOOD",
-    "RKLB", "T", "AMD", "PLTR", "SOFI", "NFLX", "BABA", "SNOW", "SHOP", "F", "UAL"
-  ];
+  "AAPL", "MSFT", "AMZN", "NVDA", "TSLA", "META", "GOOGL", "AMD", "NFLX", "SOFI",
+  "PLTR", "F", "UAL", "SHOP", "SNOW", "COIN", "BABA", "ARKK", "HOOD", "T",
+  "NIO", "DIS", "BA", "ABNB", "CRM", "PYPL", "INTC", "WMT", "CVX", "XOM",
+  "GE", "UBER", "RIVN", "LCID", "PFE", "MRNA", "TSM", "LULU", "SPY", "QQQ",
+  "V", "MA", "SQ", "NVAX", "BIDU", "ROKU", "ZM", "AFRM", "TQQQ", "QQQ",
+  "TGT", "COST", "WBA", "CVS", "BMY", "JNJ", "MRK", "PEP", "KO", "MCD",
+  "SBUX", "GM", "DELL", "HPQ", "NKE", "ADBE", "ORCL", "CRM", "GS", "MS",
+  "BLK", "SCHW", "TSLA", "FUBO", "DKNG", "PANW", "ENPH", "FSLR", "RUN", "NEE", "AAL", "DAL",
+  "BX", "TROW", "VTI", "VOO", "ARKW", "ARKF", "ARKQ", "QQQJ", "SPYG", "SPYD"
+];
 
   try {
     const allResults = await analyseMultipleStocks(symbols);
